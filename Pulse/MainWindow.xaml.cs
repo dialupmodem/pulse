@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using Pulse.Models;
+using System.Diagnostics;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -19,6 +21,21 @@ namespace Pulse
         public MainWindow()
         {
             InitializeComponent();
+            LoadProcesses();
+        }
+        private void LoadProcesses()
+        {
+            var processes = Process.GetProcesses()
+                .Select(p => new ProcessRow
+                {
+                    Name = p.ProcessName,
+                    Id = p.Id,
+                    Memory = $"{p.WorkingSet64 / 1024d / 1024d:N1} MB"
+                })
+                .OrderBy(p => p.Name)
+                .ToList();
+
+            ProcessesGrid.ItemsSource = processes;
         }
     }
 }

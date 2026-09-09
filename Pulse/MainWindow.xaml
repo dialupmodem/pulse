@@ -6,7 +6,20 @@
         xmlns:local="clr-namespace:Pulse"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-
+    <Grid Margin="12">
+        <DataGrid x:Name="ProcessesGrid"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Process"
+                                    Binding="{Binding Name}" />
+                
+                <DataGridTextColumn Header="PID"
+                                    Binding="{Binding Id}" />
+                
+                <DataGridTextColumn Header="Memory"
+                                    Binding="{Binding Memory}" />
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </Window>
