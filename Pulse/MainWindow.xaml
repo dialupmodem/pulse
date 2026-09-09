@@ -13,31 +13,86 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        
+
         <ui:TitleBar Grid.Row="0" 
                      Title="Pulse" />
-        
-        <ui:TextBox Grid.Row="1" 
-                    x:Name="SearchBox"
-                    Margin="0,0,0,8"
-                    PlaceholderText="Search processes..."
-                    TextChanged="SearchBox_TextChanged" />
 
-        
-        <DataGrid Grid.Row="2"
+        <Grid Grid.Row="1" Margin="12,8,12,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <ui:TextBox Grid.Row="1" 
+                        x:Name="SearchBox"
+                        Height="36"
+                        PlaceholderText="Search processes..."
+                        TextChanged="SearchBox_TextChanged" />
+
+            <ui:Button Grid.Column="1"
+                       Height="36"
+                       Margin="8,0,0,0"
+                       Content="Refresh"
+                       Click="RefreshButton_Click" />
+        </Grid>
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="300" />
+            </Grid.ColumnDefinitions>
+
+            <DataGrid Grid.Column="0"
                   x:Name="ProcessesGrid"
                   AutoGenerateColumns="False"
-                  IsReadOnly="True">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Process"
+                  IsReadOnly="True"
+                  SelectionMode="Single"
+                  SelectionChanged="ProcessesGrid_SelectionChanged">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Process"
                                     Binding="{Binding Name}" />
-                
-                <DataGridTextColumn Header="PID"
+
+                    <DataGridTextColumn Header="PID"
                                     Binding="{Binding Id}" />
-                
-                <DataGridTextColumn Header="Memory"
+
+                    <DataGridTextColumn Header="Memory"
                                     Binding="{Binding Memory}" />
-            </DataGrid.Columns>
-        </DataGrid>
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <Border Grid.Column="1">
+                <StackPanel>
+                    <ui:TextBlock Text="Process Details" 
+                                  Margin="0,0,0,2" />
+                    <ui:TextBlock x:Name="ProcessName"
+                                  Margin="0,0,0,8" />
+                    <Grid Margin="0,0,0,2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <ui:TextBlock Grid.Column="0"
+                                      Text="PID" />
+                        
+                        <ui:TextBlock Grid.Column="1"
+                                      Name="ProcessID" />
+                    </Grid>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <ui:TextBlock Grid.Column="0"
+                                      Text="Memory" />
+
+                        <ui:TextBlock Grid.Column="1"
+                                      Name="ProcessMemory" />
+                    </Grid>
+                </StackPanel>
+            </Border>
+        </Grid>
+
     </Grid>
 </ui:FluentWindow>

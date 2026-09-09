@@ -43,19 +43,35 @@ namespace Pulse
 
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
+            ApplyFilter();
+        }
+
+        private void RefreshButton_Click(object sender, RoutedEventArgs e)
+        {
+            LoadProcesses();
+        }
+
+        private void ApplyFilter()
+        {
             var search = SearchBox.Text.Trim();
 
-            if (string.IsNullOrWhiteSpace(search))
-            {
-                ProcessesGrid.ItemsSource = _allProcesses;
-                return;
-            }
+            ProcessesGrid.ItemsSource = string.IsNullOrWhiteSpace(search)
+                ? _allProcesses
+                : _allProcesses
+                    .Where(p =>
+                        p.Name.Contains(search, StringComparison.OrdinalIgnoreCase) ||
+                        p.Id.ToString().Contains(search))
+                    .ToList();
+        }
 
-            ProcessesGrid.ItemsSource = _allProcesses
-                .Where(p =>
-                    p.Name.Contains(search, StringComparison.OrdinalIgnoreCase) ||
-                    p.Id.ToString().Contains(search))
-                .ToList();
+        private void ProcessesGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (ProcessesGrid.SelectedItem is not ProcessRow process)
+                return;
+
+            ProcessName.Text = process.Name;
+            ProcessID.Text = process.Id.ToString();
+            ProcessMemory.Text = process.Memory;
         }
     }
 }
