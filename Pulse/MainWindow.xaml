@@ -10,10 +10,21 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <ui:TitleBar Title="Pulse" />
-        <DataGrid Grid.Row="1"
+        
+        <ui:TitleBar Grid.Row="0" 
+                     Title="Pulse" />
+        
+        <ui:TextBox Grid.Row="1" 
+                    x:Name="SearchBox"
+                    Margin="0,0,0,8"
+                    PlaceholderText="Search processes..."
+                    TextChanged="SearchBox_TextChanged" />
+
+        
+        <DataGrid Grid.Row="2"
                   x:Name="ProcessesGrid"
                   AutoGenerateColumns="False"
                   IsReadOnly="True">

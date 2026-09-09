@@ -19,6 +19,8 @@ namespace Pulse
     /// </summary>
     public partial class MainWindow : FluentWindow
     {
+        private List<ProcessRow> _allProcesses = [];
+
         public MainWindow()
         {
             InitializeComponent();
@@ -26,7 +28,7 @@ namespace Pulse
         }
         private void LoadProcesses()
         {
-            var processes = Process.GetProcesses()
+            _allProcesses = Process.GetProcesses()
                 .Select(p => new ProcessRow
                 {
                     Name = p.ProcessName,
@@ -36,7 +38,24 @@ namespace Pulse
                 .OrderBy(p => p.Name)
                 .ToList();
 
-            ProcessesGrid.ItemsSource = processes;
+            ProcessesGrid.ItemsSource = _allProcesses;
+        }
+
+        private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var search = SearchBox.Text.Trim();
+
+            if (string.IsNullOrWhiteSpace(search))
+            {
+                ProcessesGrid.ItemsSource = _allProcesses;
+                return;
+            }
+
+            ProcessesGrid.ItemsSource = _allProcesses
+                .Where(p =>
+                    p.Name.Contains(search, StringComparison.OrdinalIgnoreCase) ||
+                    p.Id.ToString().Contains(search))
+                .ToList();
         }
     }
 }
