@@ -66,12 +66,49 @@ namespace Pulse
 
         private void ProcessesGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (ProcessesGrid.SelectedItem is not ProcessRow process)
+            if (ProcessesGrid.SelectedItem is not ProcessRow processRow)
                 return;
 
-            ProcessName.Text = process.Name;
-            ProcessID.Text = process.Id.ToString();
-            ProcessMemory.Text = process.Memory;
+            ProcessName.Text = processRow.Name;
+            ProcessID.Text = processRow.Id.ToString();
+            ProcessMemory.Text = processRow.Memory;
+            try
+            {
+                var _process = Process.GetProcessById(processRow.Id);
+
+                ExecutionPath.Text = TryGet(() => _process.MainModule!.FileName);
+                StartTime.Text = TryGet(() => _process.StartTime.ToString("M/d/yyyy h:mm:ss tt"));
+                ThreadCount.Text = TryGet(() => _process.Threads.Count.ToString());
+                HandleCount.Text = TryGet(() => _process.HandleCount.ToString());
+            }
+
+            catch (ArgumentException)
+            {
+                ClearProcessDetails();
+                return;
+            }
+        }
+
+        private static string TryGet(Func<string> getter)
+        {
+            try
+            {
+                return getter();
+            }
+            catch
+            {
+                return "Unavailable";
+            }
+        }
+        private void ClearProcessDetails()
+        {
+            ProcessName.Text = "";
+            ProcessID.Text = "";
+            ProcessMemory.Text = "";
+            ExecutionPath.Text = "";
+            StartTime.Text = "";
+            ThreadCount.Text = "";
+            HandleCount.Text = "";
         }
     }
 }

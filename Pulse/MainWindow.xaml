@@ -60,7 +60,7 @@
                 </DataGrid.Columns>
             </DataGrid>
 
-            <Border Grid.Column="1">
+            <Border Grid.Column="1" Margin="12,0,0,0">
                 <StackPanel>
                     <ui:TextBlock Text="Process Details" 
                                   Margin="0,0,0,2" />
@@ -74,11 +74,12 @@
 
                         <ui:TextBlock Grid.Column="0"
                                       Text="PID" />
-                        
+
                         <ui:TextBlock Grid.Column="1"
                                       Name="ProcessID" />
+                        
                     </Grid>
-                    <Grid>
+                    <Grid Margin="0,0,0,2">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="100" />
                             <ColumnDefinition Width="*" />
@@ -89,6 +90,55 @@
 
                         <ui:TextBlock Grid.Column="1"
                                       Name="ProcessMemory" />
+                    </Grid>
+                    <Grid Margin="0,0,0,2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <ui:TextBlock Grid.Column="0"
+                                      Text="Path" />
+
+                        <ui:TextBlock Grid.Column="1"
+                                      Name="ExecutionPath" 
+                                      TextWrapping="Wrap" />
+                    </Grid>
+                    <Grid Margin="0,0,0,2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <ui:TextBlock Grid.Column="0"
+                                      Text="Start Time" />
+
+                        <ui:TextBlock Grid.Column="1"
+                                      Name="StartTime" />
+                    </Grid>
+                    <Grid Margin="0,0,0,2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <ui:TextBlock Grid.Column="0"
+                                      Text="Thread Count" />
+
+                        <ui:TextBlock Grid.Column="1"
+                                      Name="ThreadCount" />
+                    </Grid>
+                    <Grid Margin="0,0,0,2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <ui:TextBlock Grid.Column="0"
+                                      Text="Handle Count" />
+
+                        <ui:TextBlock Grid.Column="1"
+                                      Name="HandleCount" />
                     </Grid>
                 </StackPanel>
             </Border>
