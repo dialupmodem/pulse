@@ -57,6 +57,9 @@
 
                     <DataGridTextColumn Header="Memory"
                                     Binding="{Binding Memory}" />
+
+                    <DataGridTextColumn Header="CPU"
+                                        Binding="{Binding CpuPercent, StringFormat={}{0:F1}%}" />
                 </DataGrid.Columns>
             </DataGrid>
 

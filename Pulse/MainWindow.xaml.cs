@@ -1,5 +1,6 @@
 ﻿using Pulse.Models;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -10,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using Wpf.Ui.Controls;
 
 namespace Pulse
@@ -20,25 +22,27 @@ namespace Pulse
     public partial class MainWindow : FluentWindow
     {
         private List<ProcessRow> _allProcesses = [];
+        private readonly Dictionary<int, (TimeSpan CpuTime, DateTime SimpleTime)> _cpuSamples = [];
+        private readonly DispatcherTimer _refreshTimer = new()
+        {
+            Interval = TimeSpan.FromSeconds(2)
+        };
 
         public MainWindow()
         {
             InitializeComponent();
-            LoadProcesses();
+            _refreshTimer.Tick += RefreshTimer_Tick;
+            _refreshTimer.Start();
+            //LoadProcesses();
         }
         private void LoadProcesses()
         {
             _allProcesses = Process.GetProcesses()
-                .Select(p => new ProcessRow
-                {
-                    Name = p.ProcessName,
-                    Id = p.Id,
-                    Memory = $"{p.WorkingSet64 / 1024d / 1024d:N1} MB"
-                })
+                .Select(CreateProcessRow)
                 .OrderBy(p => p.Name)
                 .ToList();
 
-            ProcessesGrid.ItemsSource = _allProcesses;
+            ApplyFilter();
         }
 
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -89,6 +93,11 @@ namespace Pulse
             }
         }
 
+        private void RefreshTimer_Tick(object? sender, EventArgs e)
+        {
+            LoadProcesses();
+        }
+
         private static string TryGet(Func<string> getter)
         {
             try
@@ -109,6 +118,54 @@ namespace Pulse
             StartTime.Text = "";
             ThreadCount.Text = "";
             HandleCount.Text = "";
+        }
+        private double? GetCpuPercent(Process process)
+        {
+            TimeSpan _cpuTime;
+
+            try
+            {
+                _cpuTime = process.TotalProcessorTime;
+            }
+            catch
+            {
+                return null;
+            }
+            var _now = DateTime.UtcNow;
+            
+
+            double _cpuPercent = 0;
+
+            if (_cpuSamples.TryGetValue(process.Id, out var previous))
+            {
+                var _cpuDelta = _cpuTime - previous.CpuTime;
+                var _timeDelta = _now - previous.SimpleTime;
+
+                if (_timeDelta.TotalMilliseconds > 0)
+                {
+                    _cpuPercent =
+                        _cpuDelta.TotalMilliseconds /
+                        _timeDelta.TotalMilliseconds /
+                        Environment.ProcessorCount *
+                        100;
+                }
+            }
+
+            _cpuSamples[process.Id] = (_cpuTime, _now);
+
+            return _cpuPercent;
+        }
+
+        private ProcessRow CreateProcessRow(Process process)
+        {
+
+            return new ProcessRow
+            {
+                Name = process.ProcessName,
+                Id = process.Id,
+                Memory = $"{process.WorkingSet64 / 1024d / 1024d:N1} MB",
+                CpuPercent = GetCpuPercent(process)
+            };
         }
     }
 }
